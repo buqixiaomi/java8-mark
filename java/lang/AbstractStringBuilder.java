@@ -419,6 +419,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
             return appendNull();
         int len = str.length();
         ensureCapacityInternal(count + len);
+        //调用String 中的getChars方法将str中的数组copy到value数组中
         str.getChars(0, len, value, count);
         count += len;
         return this;

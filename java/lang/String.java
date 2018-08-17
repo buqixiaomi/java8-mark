@@ -41,12 +41,15 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * The {@code String} class represents character strings. All
+ * String 类代表的是字符串
  * string literals in Java programs, such as {@code "abc"}, are
  * implemented as instances of this class.
+ * java程序中的字符串字面量，如 “abc”,就是此类的实例
  * <p>
  * Strings are constant; their values cannot be changed after they
  * are created. String buffers support mutable strings.
  * Because String objects are immutable they can be shared. For example:
+ * Strings 是常量，一旦被创建则值不可改变，String 对象是不可变的共享对象
  * <blockquote><pre>
  *     String str = "abc";
  * </pre></blockquote><p>
@@ -70,33 +73,43 @@ import java.util.regex.PatternSyntaxException;
  * copy of a string with all characters translated to uppercase or to
  * lowercase. Case mapping is based on the Unicode Standard version
  * specified by the {@link java.lang.Character Character} class.
+ * String 类包含了对字符序列的操作，字符串比较，字符串搜索，子串提取，
+ * 生成一个字符串对所以字符转化为大写或者小写的copy。大小写映射是基于
+ * Character 类指定的标准Unicode版本
  * <p>
  * The Java language provides special support for the string
  * concatenation operator (&nbsp;+&nbsp;), and for conversion of
  * other objects to strings. String concatenation is implemented
  * through the {@code StringBuilder}(or {@code StringBuffer})
  * class and its {@code append} method.
+ * java语言提供了对字符串连接符（“+”）,其他对象转为字符串对象的特别支持。
+ * 字符串的连接是通过 StringBuilder 或者 StringBuffer 这两个类及它们的append
+ * 方法实现的。
  * String conversions are implemented through the method
  * {@code toString}, defined by {@code Object} and
  * inherited by all classes in Java. For additional information on
  * string concatenation and conversion, see Gosling, Joy, and Steele,
  * <i>The Java Language Specification</i>.
- *
+ * 对象到字符串转换是通过Object类中定义的toString方法实现的
  * <p> Unless otherwise noted, passing a <tt>null</tt> argument to a constructor
  * or method in this class will cause a {@link NullPointerException} to be
  * thrown.
- *
+ * 除非另外注明，传递一个null 参数到此类的构造器或者方法中会引起一个
+ * NullPointerExecption异常
  * <p>A {@code String} represents a string in the UTF-16 format
  * in which <em>supplementary characters</em> are represented by <em>surrogate
  * pairs</em> (see the section <a href="Character.html#unicode">Unicode
  * Character Representations</a> in the {@code Character} class for
  * more information).
+ * 字符串表示的是UTF-16格式的，其中补充的字符是由代理对实现，更多信息可以
+ * 参考 Character 中的Unicode 部分。
  * Index values refer to {@code char} code units, so a supplementary
  * character uses two positions in a {@code String}.
+ * 索引值引用的是char 的编码单元，所以一个补充字符会占用两个字符串位置
  * <p>The {@code String} class provides methods for dealing with
  * Unicode code points (i.e., characters), in addition to those for
  * dealing with Unicode code units (i.e., {@code char} values).
- *
+ * 除了处理Unicode代码单元之外，String类还提供了处理Unicode代码点的方法
  * @author  Lee Boynton
  * @author  Arthur van Hoff
  * @author  Martin Buchholz
@@ -110,18 +123,23 @@ import java.util.regex.PatternSyntaxException;
 
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
-    /** The value is used for character storage. */
+    /** The value is used for character storage.
+     * 存储字符的地方，由此可见String 对象是基于数组实现的
+     * */
     private final char value[];
 
-    /** Cache the hash code for the string */
+    /** Cache the hash code for the string
+     *  缓存字符串的hashcode
+     * */
     private int hash; // Default to 0
 
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    /** use serialVersionUID from JDK 1.0.2 for interoperability
+     * serialVersionUID 有助于在java序列化及反序列化过程中对对象的校验
+     * */
     private static final long serialVersionUID = -6849794470754667710L;
 
     /**
      * Class String is special cased within the Serialization Stream Protocol.
-     *
      * A String instance is written into an ObjectOutputStream according to
      * <a href="{@docRoot}/../platform/serialization/spec/output.html">
      * Object Serialization Specification, Section 6.2, "Stream Elements"</a>
@@ -133,6 +151,7 @@ public final class String
      * Initializes a newly created {@code String} object so that it represents
      * an empty character sequence.  Note that use of this constructor is
      * unnecessary since Strings are immutable.
+     * String 对象初始化的默认值是空串！由于String值的不可变性，此构造器显得有些多余
      */
     public String() {
         this.value = "".value;
@@ -144,7 +163,8 @@ public final class String
      * newly created string is a copy of the argument string. Unless an
      * explicit copy of {@code original} is needed, use of this constructor is
      * unnecessary since Strings are immutable.
-     *
+     * 相当于字符串的copy ,除非是显示的copy需求，否则由于String值的不可变性，
+     * 此构造器显得有些多余
      * @param  original
      *         A {@code String}
      */
@@ -158,7 +178,9 @@ public final class String
      * characters currently contained in the character array argument. The
      * contents of the character array are copied; subsequent modification of
      * the character array does not affect the newly created string.
-     *
+     * 分配一个新字符串，以便它表示当前包含在字符数组参数中的字符序列
+     * 字符串内容是对数组的真实拷贝，对原字符串数据的后续修改不影响新创建的
+     * 字符串，此依然可以体现String的不可变性
      * @param  value
      *         The initial value of the string
      */
@@ -173,7 +195,10 @@ public final class String
      * argument specifies the length of the subarray. The contents of the
      * subarray are copied; subsequent modification of the character array does
      * not affect the newly created string.
-     *
+     * 分配一个新字符串，以便它表示当前包含在字符数组参数中的子字符序列
+     * offset 参数表示子数组开始字符在参数数组中的索引位置，
+     * count 参数表示子数组长度
+     * 字符串内容是对数组的真实拷贝，对原字符串数据的后续修改不影响新创建的
      * @param  value
      *         Array that is the source of characters
      *
@@ -215,7 +240,10 @@ public final class String
      * length of the subarray.  The contents of the subarray are converted to
      * {@code char}s; subsequent modification of the {@code int} array does not
      * affect the newly created string.
-     *
+     * 分配一个新字符串，以便它表示当前包含在Unicode编码的数组参数中的子字符序列
+     * offset 参数表示子数组开始字符在参数数组中的索引位置，
+     * count 参数表示子数组长度
+     * 字符串内容是对数组的真实拷贝，对原字符串数据的后续修改不影响新创建的
      * @param  codePoints
      *         Array that is the source of Unicode code points
      *
@@ -283,7 +311,7 @@ public final class String
     /**
      * Allocates a new {@code String} constructed from a subarray of an array
      * of 8-bit integer values.
-     *
+
      * <p> The {@code offset} argument is the index of the first byte of the
      * subarray, and the {@code count} argument specifies the length of the
      * subarray.
@@ -390,7 +418,8 @@ public final class String
      * bytes using the specified charset.  The length of the new {@code String}
      * is a function of the charset, and hence may not be equal to the length
      * of the subarray.
-     *
+     * 使用特定的编码字符集编码字节数组构造字符串。生成的字符串是字符集运行结果，
+     * 因此字符长度可能不等于字节数组的长度
      * <p> The behavior of this constructor when the given bytes are not valid
      * in the given charset is unspecified.  The {@link
      * java.nio.charset.CharsetDecoder} class should be used when more control
@@ -431,7 +460,8 @@ public final class String
      * bytes using the specified {@linkplain java.nio.charset.Charset charset}.
      * The length of the new {@code String} is a function of the charset, and
      * hence may not be equal to the length of the subarray.
-     *
+     * 使用特定的编码字符集编码字节数组构造字符串。生成的字符串是字符集运行结果，
+     * 因此字符长度可能不等于字节数组的长度
      * <p> This method always replaces malformed-input and unmappable-character
      * sequences with this charset's default replacement string.  The {@link
      * java.nio.charset.CharsetDecoder} class should be used when more control
@@ -571,7 +601,7 @@ public final class String
      * currently contained in the string buffer argument. The contents of the
      * string buffer are copied; subsequent modification of the string buffer
      * does not affect the newly created string.
-     *
+     * 使用StringBuffer构建String对象时，对buffer 添加同步锁，保证线程安全
      * @param  buffer
      *         A {@code StringBuffer}
      */
@@ -823,6 +853,7 @@ public final class String
         if (srcBegin > srcEnd) {
             throw new StringIndexOutOfBoundsException(srcEnd - srcBegin);
         }
+        //调用数组copy
         System.arraycopy(value, srcBegin, dst, dstBegin, srcEnd - srcBegin);
     }
 

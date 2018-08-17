@@ -133,6 +133,7 @@ public final class StringBuilder
 
     @Override
     public StringBuilder append(String str) {
+        //调用了抽象类AbstractStringBuilder的append 方法
         super.append(str);
         return this;
     }
