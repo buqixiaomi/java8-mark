@@ -650,6 +650,7 @@ public final class String
      *          object.
      */
     public int length() {
+        //返回内部数组的长度
         return value.length;
     }
 
@@ -662,6 +663,7 @@ public final class String
      * @since 1.6
      */
     public boolean isEmpty() {
+        //返回内部数组长度是否为0
         return value.length == 0;
     }
 
@@ -687,6 +689,7 @@ public final class String
         if ((index < 0) || (index >= value.length)) {
             throw new StringIndexOutOfBoundsException(index);
         }
+        //返回内部数据相应索引位置的字符
         return value[index];
     }
 
@@ -810,6 +813,7 @@ public final class String
      * This method doesn't perform any range checking.
      */
     void getChars(char dst[], int dstBegin) {
+        //把当前字符串数组整个copy到目标dst数组中。
         System.arraycopy(value, 0, dst, dstBegin, value.length);
     }
 
@@ -844,6 +848,8 @@ public final class String
      *                {@code dst.length}</ul>
      */
     public void getChars(int srcBegin, int srcEnd, char dst[], int dstBegin) {
+        // 将当前字符串数组从srcBegin 索引处（包含）到srcEnd索引处（包含）
+        //cpoy到目标数组dst（从desBegin位置（包含）开始）中
         if (srcBegin < 0) {
             throw new StringIndexOutOfBoundsException(srcBegin);
         }
@@ -1006,8 +1012,11 @@ public final class String
      */
     public boolean equals(Object anObject) {
         if (this == anObject) {
+            //引用相同，则为true
             return true;
         }
+        //String 实例比较
+        //length相等，char数组遍历，同一个位置的char 必须相等
         if (anObject instanceof String) {
             String anotherString = (String)anObject;
             int n = value.length;
@@ -1023,6 +1032,7 @@ public final class String
                 return true;
             }
         }
+        //不是String 实例，则返回false
         return false;
     }
 
@@ -1134,6 +1144,7 @@ public final class String
      * @see  #equals(Object)
      */
     public boolean equalsIgnoreCase(String anotherString) {
+        //判断在不对大小写敏感的前提下，是否与当前字符值相等
         return (this == anotherString) ? true
                 : (anotherString != null)
                 && (anotherString.value.length == value.length)
@@ -1182,6 +1193,11 @@ public final class String
      *          lexicographically greater than the string argument.
      */
     public int compareTo(String anotherString) {
+        //比较两个字符串的大小
+        //遍历最短的字符串数组，直到相同位置的字符不同为止
+        //返回这个不同位置的当前字符unicode - 被比较者的unicode
+        //如果遍历过程中无法找到相异，则返回当前字符串长度 - 被比较者长度
+        //负数表示小于，正数表示大于，0表示相等
         int len1 = value.length;
         int len2 = anotherString.value.length;
         int lim = Math.min(len1, len2);
@@ -1720,6 +1736,7 @@ public final class String
      * this.startsWith(str, <i>k</i>)
      * </pre></blockquote>
      * If no such value of <i>k</i> exists, then {@code -1} is returned.
+     * 子串存在当前字符串的开始位置索引
      *
      * @param   str   the substring to search for.
      * @return  the index of the first occurrence of the specified substring,
@@ -2053,6 +2070,7 @@ public final class String
      *                of this {@code String}.
      * @return  a string that represents the concatenation of this object's
      *          characters followed by the string argument's characters.
+     * 字符换连接，并没有比+ 号强多少
      */
     public String concat(String str) {
         int otherLen = str.length();
@@ -2093,6 +2111,8 @@ public final class String
      * @param   newChar   the new character.
      * @return  a string derived from this string by replacing every
      *          occurrence of {@code oldChar} with {@code newChar}.
+     *
+     * 全串替换
      */
     public String replace(char oldChar, char newChar) {
         if (oldChar != newChar) {
@@ -2204,6 +2224,8 @@ public final class String
      *
      * @since 1.4
      * @spec JSR-51
+     *
+     * 替换掉首个匹配的子字符串
      */
     public String replaceFirst(String regex, String replacement) {
         return Pattern.compile(regex).matcher(this).replaceFirst(replacement);
@@ -2249,6 +2271,7 @@ public final class String
      *
      * @since 1.4
      * @spec JSR-51
+     * 替换掉所有被匹配到的子字符串
      */
     public String replaceAll(String regex, String replacement) {
         return Pattern.compile(regex).matcher(this).replaceAll(replacement);
@@ -2265,6 +2288,7 @@ public final class String
      * @param  replacement The replacement sequence of char values
      * @return  The resulting string
      * @since 1.5
+     * 逐字匹配
      */
     public String replace(CharSequence target, CharSequence replacement) {
         return Pattern.compile(target.toString(), Pattern.LITERAL).matcher(
@@ -2894,6 +2918,8 @@ public final class String
      * @return  A string whose value is this string, with any leading and trailing white
      *          space removed, or this string if it has no leading or
      *          trailing white space.
+     *
+     * 去除两端特殊字符，32（" "） 以下
      */
     public String trim() {
         int len = value.length;
@@ -2920,7 +2946,7 @@ public final class String
 
     /**
      * Converts this string to a new character array.
-     *
+     * 转化成字符数组
      * @return  a newly allocated character array whose length is the length
      *          of this string and whose contents are initialized to contain
      *          the character sequence represented by this string.
@@ -3194,6 +3220,10 @@ public final class String
      *
      * @return  a string that has the same contents as this string, but is
      *          guaranteed to be from a pool of unique strings.
+     *
+     * 本地方法；当调用此方法时，如果常量池已包含和当前字符相同的对象，则返回常量池字符串引用
+     * 否则，这个对象会被加入常量池，返回该常量池对象引用
+     * 可以提高程序效率或者减少内存占用的情况
      */
     public native String intern();
 }
